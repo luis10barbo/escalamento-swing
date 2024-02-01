@@ -21,13 +21,13 @@ public class JanelaPrincipal extends JFrame {
     JPanel painelIncrementarFixoContratos;
 
 
-    String TXT_PORCENTAGEM_ACERTO = "Porcentagem acerto";
+    String TXT_PORCENTAGEM_ACERTO = "Porcentagem acerto (ex: 80 seria 80%)";
     String TXT_QUANTIDADE_CONTRATOS = "Quantidade Contratos inicial";
     String TXT_LUCRO_CONTRATO = "Lucro p/contrato por dia";
     String TXT_DIAS_UTEIS = "Dias Uteis";
     String TXT_ALVO_ESCALAMENTO = "Alvo para escalamento";
     String TXT_CAPITAL_INICIAL = "Capital Inicial";
-    String TXT_INCREMENTAR_FIXO_CONTRATOS = "Incrementar por numero fixo contratos ao atingir alvo";
+    String TXT_INCREMENTAR_FIXO_CONTRATOS = "Incrementar por numero fixo os contratos ao atingir alvo";
     String TXT_INCREMENTO_CONTRATO = "Incremento de contrato por alvos";
 
     public JanelaPrincipal() {
