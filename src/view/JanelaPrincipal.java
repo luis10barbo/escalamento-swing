@@ -106,6 +106,8 @@ public class JanelaPrincipal extends JFrame {
         double total = 0;
         double ultimoEscalamento = 0;
         int qntContratosAtual = 0;
+
+        // Adquirir parametros do programa
         Optional<Integer> optDiasUteis = adquirirDiasUteis();
         if (optDiasUteis.isEmpty()) return;
 
@@ -122,18 +124,21 @@ public class JanelaPrincipal extends JFrame {
             total = optCapitalInicial.get();
         }
 
+        Optional<Integer> optPorcAcerto = adquirirPorcAcerto();
+        if (optPorcAcerto.isEmpty()) return;
+
+        Optional<Double> optLucroContrato = adquirirLucroContrato();
+        if (optLucroContrato.isEmpty()) return;
+
+        Optional<Integer> optIncrementoContratos = adquirirIncrementoContratos();
+        // finalizar adquirir parametros do programa
+
         for (int i = 0; i < optDiasUteis.get(); i++) {
             int dia = i + 1;
             int porc = new Random().nextInt(100);
             System.out.println(" -- Simulando dia " + dia + " -- ");
             System.out.println("Total atual: " + total + " Ultimo escalamento: " + ultimoEscalamento + " Qnt Contratos: " + qntContratosAtual);
 
-
-            Optional<Integer> optPorcAcerto = adquirirPorcAcerto();
-            if (optPorcAcerto.isEmpty()) return;
-
-            Optional<Double> optLucroContrato = adquirirLucroContrato();
-            if (optLucroContrato.isEmpty()) return;
 
             if (optPorcAcerto.get() > porc) {
                 // Ganhou
@@ -147,7 +152,6 @@ public class JanelaPrincipal extends JFrame {
 
             // Ajustar quantidade de contratos
             if (cbIncrementarFixoContratos.isSelected()) {
-                Optional<Integer> optIncrementoContratos = adquirirIncrementoContratos();
                 if (optIncrementoContratos.isEmpty()) return;
                 // Aumentar / Diminuir por numero fixo
                 if (optPorcAcerto.get() > porc) {
