@@ -135,7 +135,7 @@ public class JanelaPrincipal extends JFrame {
 
         for (int i = 0; i < optDiasUteis.get(); i++) {
             int dia = i + 1;
-            int porc = new Random().nextInt(100);
+            int porc = new Random().nextInt(101);
             System.out.println(" -- Simulando dia " + dia + " -- ");
             System.out.println("Total atual: " + total + " Ultimo escalamento: " + ultimoEscalamento + " Qnt Contratos: " + qntContratosAtual);
 
