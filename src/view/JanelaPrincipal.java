@@ -45,10 +45,6 @@ public class JanelaPrincipal extends JFrame {
         tfPorcAcerto = new TextFieldPrincipal(80);
         painelPrincipal.add(tfPorcAcerto);
 
-        painelPrincipal.add(new LabelPrincipal(TXT_QUANTIDADE_CONTRATOS));
-        tfQntContratos = new TextFieldPrincipal(1);
-        painelPrincipal.add(tfQntContratos);
-
         painelPrincipal.add(new LabelPrincipal(TXT_CAPITAL_INICIAL));
         tfCapitalInicial = new TextFieldPrincipal(0);
         painelPrincipal.add(tfCapitalInicial);
@@ -75,6 +71,11 @@ public class JanelaPrincipal extends JFrame {
         painelIncrementarFixoContratos.add(new LabelPrincipal(TXT_INCREMENTO_CONTRATO));
         tfIncrementoCapital = new TextFieldPrincipal(1);
         painelIncrementarFixoContratos.add(tfIncrementoCapital);
+
+        painelIncrementarFixoContratos.add(new LabelPrincipal(TXT_QUANTIDADE_CONTRATOS));
+        tfQntContratos = new TextFieldPrincipal(1);
+        painelIncrementarFixoContratos.add(tfQntContratos);
+
         painelPrincipal.add(painelIncrementarFixoContratos);
 
         JButton btnGerarEscalamento = new JButton("Gerar Escalamento");
@@ -132,6 +133,11 @@ public class JanelaPrincipal extends JFrame {
 
         Optional<Integer> optIncrementoContratos = adquirirIncrementoContratos();
         // finalizar adquirir parametros do programa
+
+        if (!cbIncrementarFixoContratos.isSelected()) {
+            // Setar qnt contrato inicial caso n va subir em numero fixo
+            qntContratosAtual = ((int) total / optAlvoEscalamento.get()) + 1;
+        }
 
         for (int i = 0; i < optDiasUteis.get(); i++) {
             int dia = i + 1;
