@@ -1,6 +1,7 @@
 package view;
 
 import model.ParametrosPrograma;
+import model.simulacao.SimulacaoLuis2;
 import view.componentes.LabelPrincipal;
 import view.componentes.TextFieldPrincipal;
 import model.ResultadoSimulacao;
@@ -122,7 +123,7 @@ public class JanelaPrincipal extends JFrame {
     public void cliqueGerarEscalamento(ActionEvent e) {
         // TODO: Mudar para Simulacao que voce quer usar
         ParametrosPrograma parametros = new ParametrosPrograma(this);
-        Simulacao simulacaoEscolhida = new SimulacaoLuis1(this);
+        Simulacao simulacaoEscolhida = new SimulacaoLuis2(this);
         if (cbSimularMultiplasVezes.isSelected()) {
             Integer optNumSimulacoes = parametros.adquirirNumeroSimulacoes();
             if (optNumSimulacoes == null) {
