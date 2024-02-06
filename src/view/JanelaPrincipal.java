@@ -1,5 +1,6 @@
 package view;
 
+import model.ParametrosPrograma;
 import view.componentes.LabelPrincipal;
 import view.componentes.TextFieldPrincipal;
 import model.ResultadoSimulacao;
@@ -11,30 +12,30 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class JanelaPrincipal extends JFrame {
-    JTextField tfPorcAcerto;
-    JTextField tfQntContratos;
-    JTextField tfLucroContrato;
-    JTextField tfDiasUteis;
-    JTextField tfAlvoEscalamento;
-    JTextField tfCapitalInicial;
-    JCheckBox cbIncrementarManualmenteContratos;
-    JCheckBox cbSimularMultiplasVezes;
-    JTextField tfNumeroSimulacoes;
-    JTextField tfIncrementoCapital;
-    JPanel painelIncrementarManualmenteContratos;
-    JPanel painelSimularMultiplasVezes;
+    public JTextField tfPorcAcerto;
+    public JTextField tfQntContratos;
+    public JTextField tfLucroContrato;
+    public JTextField tfDiasUteis;
+    public JTextField tfAlvoEscalamento;
+    public JTextField tfCapitalInicial;
+    public JCheckBox cbIncrementarManualmenteContratos;
+    public JCheckBox cbSimularMultiplasVezes;
+    public JTextField tfNumeroSimulacoes;
+    public JTextField tfIncrementoCapital;
+    public JPanel painelIncrementarManualmenteContratos;
+    public JPanel painelSimularMultiplasVezes;
 
 
 
-    String TXT_PORCENTAGEM_ACERTO = "Porcentagem acerto (ex: 80 seria 80%)";
-    String TXT_QUANTIDADE_CONTRATOS = "Quantidade Contratos inicial";
-    String TXT_LUCRO_CONTRATO = "Lucro p/contrato por dia";
-    String TXT_DIAS_UTEIS = "Dias Uteis";
-    String TXT_ALVO_ESCALAMENTO = "Alvo para escalamento";
-    String TXT_CAPITAL_INICIAL = "Capital Inicial";
-    String TXT_INCREMENTAR_MANUALMENTE_CONTRATOS = "Incrementar manualmente os contratos";
-    String TXT_INCREMENTO_CONTRATO = "Incremento de contrato por alvos";
-    String TXT_NUMERO_SIMULACOES = "Numero de Simulacoes (maior -> mais precisao)";
+    public String TXT_PORCENTAGEM_ACERTO = "Porcentagem acerto (ex: 80 seria 80%)";
+    public String TXT_QUANTIDADE_CONTRATOS = "Quantidade Contratos inicial";
+    public String TXT_LUCRO_CONTRATO = "Lucro p/contrato por dia";
+    public String TXT_DIAS_UTEIS = "Dias Uteis";
+    public String TXT_ALVO_ESCALAMENTO = "Alvo para escalamento";
+    public String TXT_CAPITAL_INICIAL = "Capital Inicial";
+    public String TXT_INCREMENTAR_MANUALMENTE_CONTRATOS = "Incrementar manualmente os contratos";
+    public String TXT_INCREMENTO_CONTRATO = "Incremento de contrato por alvos";
+    public String TXT_NUMERO_SIMULACOES = "Numero de Simulacoes (maior -> mais precisao)";
 
     public JanelaPrincipal() {
         criarJanela();
@@ -120,9 +121,10 @@ public class JanelaPrincipal extends JFrame {
      */
     public void cliqueGerarEscalamento(ActionEvent e) {
         // TODO: Mudar para Simulacao que voce quer usar
+        ParametrosPrograma parametros = new ParametrosPrograma(this);
         Simulacao simulacaoEscolhida = new SimulacaoLuis1(this);
         if (cbSimularMultiplasVezes.isSelected()) {
-            Integer optNumSimulacoes = adquirirNumeroSimulacoes();
+            Integer optNumSimulacoes = parametros.adquirirNumeroSimulacoes();
             if (optNumSimulacoes == null) {
                 return;
             }
@@ -140,102 +142,7 @@ public class JanelaPrincipal extends JFrame {
         }
     }
 
-    public boolean adquirirSimularMultiplasVezes() {
-        return cbSimularMultiplasVezes.isSelected();
-    }
 
-    public boolean adquirirIncrementarManualmenteContratos() {
-        return cbIncrementarManualmenteContratos.isSelected();
-    }
-
-    // Abaixo tem varias funcoes para adquirir seguramente os parametros do programa
-    public Integer adquirirIncrementoContratos() {
-        int incrementoCapital;
-        try {
-            incrementoCapital = Integer.parseInt(tfIncrementoCapital.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_INCREMENTO_CONTRATO + " deve ser um numero!");
-            return null;
-        }
-        return incrementoCapital;
-    }
-
-    public Double adquirirCapitalInicial() {
-        double capitalInicial;
-        try {
-            capitalInicial = Double.parseDouble(tfCapitalInicial.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_CAPITAL_INICIAL + " deve ser um numero/real!");
-            return null;
-        }
-        return capitalInicial;
-    }
-
-    public Integer adquirirDiasUteis() {
-        int diasUteis;
-        try {
-            diasUteis = Integer.parseInt(tfDiasUteis.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_DIAS_UTEIS + " deve ser um numero!");
-            return null;
-        }
-        return diasUteis;
-    }
-
-    public Integer adquirirQntContratos() {
-        int qntContratos;
-        try {
-            qntContratos = Integer.parseInt(tfQntContratos.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_QUANTIDADE_CONTRATOS + " deve ser um numero!");
-            return null;
-        }
-        return qntContratos;
-    }
-
-    public Double adquirirLucroContrato() {
-        double lucroContrato;
-        try {
-            lucroContrato = Double.parseDouble(tfLucroContrato.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_LUCRO_CONTRATO + " deve ser um numero/real!");
-            return null;
-        }
-        return lucroContrato;
-    }
-
-    public Integer adquirirPorcAcerto() {
-        int porcAcerto;
-        try {
-            porcAcerto = Integer.parseInt(tfPorcAcerto.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_PORCENTAGEM_ACERTO + " deve ser um numero!");
-            return null;
-        }
-        return porcAcerto;
-    }
-
-    public Integer adquirirAlvoEscalamento() {
-        int alvoEscalamento;
-        try {
-            alvoEscalamento = Integer.parseInt(tfAlvoEscalamento.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_ALVO_ESCALAMENTO + " deve ser um numero!");
-            return null;
-        }
-        return alvoEscalamento;
-    }
-
-    public Integer adquirirNumeroSimulacoes() {
-        int numeroSimulacoes;
-        try {
-            numeroSimulacoes = Integer.parseInt(tfNumeroSimulacoes.getText());
-        } catch (NumberFormatException exception) {
-            JOptionPane.showMessageDialog(null, TXT_NUMERO_SIMULACOES + " deve ser um numero!");
-            return null;
-        }
-        return numeroSimulacoes;
-    }
 }
 
 /*

@@ -1,5 +1,7 @@
 package model.simulacao;
 
+import model.ParametrosPrograma;
+import model.ResultadoDia;
 import view.JanelaPrincipal;
 import model.ResultadoSimulacao;
 
@@ -18,5 +20,22 @@ public abstract class Simulacao {
     /**
      * Metodo utilizado para simular
      */
-    public abstract ResultadoSimulacao simular();
+    public ResultadoSimulacao simular() {
+        ParametrosPrograma parametrosPrograma = new ParametrosPrograma(janelaPrincipal);
+
+        Integer diasUteis = parametrosPrograma.adquirirDiasUteis();
+        if (diasUteis == null) return null;
+
+        ResultadoSimulacao resultadoSimulacao = new ResultadoSimulacao();
+        ResultadoDia diaAnterior = null;
+        for (int i = 0; i < diasUteis; i++) {
+            int dia = i + 1;
+            diaAnterior = simularDia(parametrosPrograma, diaAnterior, dia);
+            resultadoSimulacao.getResultadosDias().add(diaAnterior);
+        }
+        resultadoSimulacao.calcularResultados();
+        return resultadoSimulacao;
+    };
+
+    public abstract ResultadoDia simularDia(ParametrosPrograma parametros, ResultadoDia diaAnterior, int dia);
 }
