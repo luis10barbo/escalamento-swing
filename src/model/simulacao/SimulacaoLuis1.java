@@ -7,23 +7,16 @@ import model.ResultadoSimulacao;
 
 import java.util.Random;
 
-public class SimulacaoLuis1 extends Simulacao{
+public class SimulacaoLuis1 extends Simulacao {
     public SimulacaoLuis1(JanelaPrincipal janelaPrincipal) {
         super(janelaPrincipal);
     }
 
     @Override
-    public ResultadoDia simularDia(ParametrosPrograma parametros, ResultadoDia diaAnterior, int dia) {
-        double capitalAtual = 0;
-        int qntContratosAtual = 0;
-
-        if (diaAnterior != null) {
-            capitalAtual = diaAnterior.getCapital();
-            qntContratosAtual = diaAnterior.getContratos();
-            Double capitalInicial = parametros.adquirirCapitalInicial();
-            if (capitalInicial != null) {
-                capitalAtual = capitalInicial;
-            }
+    public ResultadoDia simularDia(ParametrosPrograma parametros, int dia) {
+        Double capitalInicial = parametros.adquirirCapitalInicial();
+        if (capitalInicial != null) {
+            capitalAtual = capitalInicial;
         }
 
         // Adquirir parametros do programa

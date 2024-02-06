@@ -9,6 +9,8 @@ import model.ResultadoSimulacao;
  * Classe simulacao base, herdar dela para criar novos metodos de simulacao;
  */
 public abstract class Simulacao {
+    protected double capitalAtual = 0.0;
+    protected int qntContratosAtual = 0;
     private final JanelaPrincipal janelaPrincipal;
     public Simulacao(JanelaPrincipal janelaPrincipal) {
         this.janelaPrincipal = janelaPrincipal;
@@ -27,15 +29,21 @@ public abstract class Simulacao {
         if (diasUteis == null) return null;
 
         ResultadoSimulacao resultadoSimulacao = new ResultadoSimulacao();
-        ResultadoDia diaAnterior = null;
         for (int i = 0; i < diasUteis; i++) {
             int dia = i + 1;
-            diaAnterior = simularDia(parametrosPrograma, diaAnterior, dia);
-            resultadoSimulacao.getResultadosDias().add(diaAnterior);
+            resultadoSimulacao.getResultadosDias().add(simularDia(parametrosPrograma, dia));
         }
+        resetarVariaveisCompartilhadas();
         resultadoSimulacao.calcularResultados();
         return resultadoSimulacao;
-    };
+    }
 
-    public abstract ResultadoDia simularDia(ParametrosPrograma parametros, ResultadoDia diaAnterior, int dia);
+    private void resetarVariaveisCompartilhadas() {
+        qntContratosAtual = 0;
+        capitalAtual = 0.0;
+    }
+
+    ;
+
+    public abstract ResultadoDia simularDia(ParametrosPrograma parametros, int dia);
 }
