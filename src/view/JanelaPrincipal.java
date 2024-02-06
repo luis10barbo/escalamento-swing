@@ -2,14 +2,13 @@ package view;
 
 import view.componentes.LabelPrincipal;
 import view.componentes.TextFieldPrincipal;
-import view.model.ResultadoDia;
 import view.model.ResultadoSimulacao;
+import view.model.simulacao.Simulacao;
+import view.model.simulacao.SimulacaoLuis1;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Optional;
-import java.util.Random;
 
 public class JanelaPrincipal extends JFrame {
     JTextField tfPorcAcerto;
@@ -18,11 +17,11 @@ public class JanelaPrincipal extends JFrame {
     JTextField tfDiasUteis;
     JTextField tfAlvoEscalamento;
     JTextField tfCapitalInicial;
-    JCheckBox cbIncrementarFixoContratos;
+    JCheckBox cbIncrementarManualmenteContratos;
     JCheckBox cbSimularMultiplasVezes;
     JTextField tfNumeroSimulacoes;
     JTextField tfIncrementoCapital;
-    JPanel painelIncrementarFixoContratos;
+    JPanel painelIncrementarManualmenteContratos;
     JPanel painelSimularMultiplasVezes;
 
 
@@ -33,7 +32,7 @@ public class JanelaPrincipal extends JFrame {
     String TXT_DIAS_UTEIS = "Dias Uteis";
     String TXT_ALVO_ESCALAMENTO = "Alvo para escalamento";
     String TXT_CAPITAL_INICIAL = "Capital Inicial";
-    String TXT_INCREMENTAR_FIXO_CONTRATOS = "Incrementar por numero fixo os contratos ao atingir alvo";
+    String TXT_INCREMENTAR_MANUALMENTE_CONTRATOS = "Incrementar manualmente os contratos";
     String TXT_INCREMENTO_CONTRATO = "Incremento de contrato por alvos";
     String TXT_NUMERO_SIMULACOES = "Numero de Simulacoes (maior -> mais precisao)";
 
@@ -68,22 +67,22 @@ public class JanelaPrincipal extends JFrame {
         tfAlvoEscalamento = new TextFieldPrincipal(1000);
         painelPrincipal.add(tfAlvoEscalamento);
 
-        cbIncrementarFixoContratos = new JCheckBox(TXT_INCREMENTAR_FIXO_CONTRATOS);
-        painelPrincipal.add(cbIncrementarFixoContratos);
-        cbIncrementarFixoContratos.addActionListener(e -> {repaint();});
+        cbIncrementarManualmenteContratos = new JCheckBox(TXT_INCREMENTAR_MANUALMENTE_CONTRATOS);
+        painelPrincipal.add(cbIncrementarManualmenteContratos);
+        cbIncrementarManualmenteContratos.addActionListener(e -> {repaint();});
 
-        painelIncrementarFixoContratos = new JPanel();
-        painelIncrementarFixoContratos.setLayout(new BoxLayout(painelIncrementarFixoContratos, BoxLayout.Y_AXIS));
+        painelIncrementarManualmenteContratos = new JPanel();
+        painelIncrementarManualmenteContratos.setLayout(new BoxLayout(painelIncrementarManualmenteContratos, BoxLayout.Y_AXIS));
 
-        painelIncrementarFixoContratos.add(new LabelPrincipal(TXT_INCREMENTO_CONTRATO));
+        painelIncrementarManualmenteContratos.add(new LabelPrincipal(TXT_INCREMENTO_CONTRATO));
         tfIncrementoCapital = new TextFieldPrincipal(1);
-        painelIncrementarFixoContratos.add(tfIncrementoCapital);
+        painelIncrementarManualmenteContratos.add(tfIncrementoCapital);
 
-        painelIncrementarFixoContratos.add(new LabelPrincipal(TXT_QUANTIDADE_CONTRATOS));
+        painelIncrementarManualmenteContratos.add(new LabelPrincipal(TXT_QUANTIDADE_CONTRATOS));
         tfQntContratos = new TextFieldPrincipal(1);
-        painelIncrementarFixoContratos.add(tfQntContratos);
+        painelIncrementarManualmenteContratos.add(tfQntContratos);
 
-        painelPrincipal.add(painelIncrementarFixoContratos);
+        painelPrincipal.add(painelIncrementarManualmenteContratos);
 
         painelSimularMultiplasVezes = new JPanel();
         painelSimularMultiplasVezes.setLayout(new BoxLayout(painelSimularMultiplasVezes, BoxLayout.Y_AXIS));
@@ -112,7 +111,7 @@ public class JanelaPrincipal extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        painelIncrementarFixoContratos.setVisible(cbIncrementarFixoContratos.isSelected());
+        painelIncrementarManualmenteContratos.setVisible(cbIncrementarManualmenteContratos.isSelected());
         painelSimularMultiplasVezes.setVisible(cbSimularMultiplasVezes.isSelected());
     }
 
@@ -120,200 +119,122 @@ public class JanelaPrincipal extends JFrame {
      * Fazer a simulacao utilizando dos parametros definidos no programa
      */
     public void cliqueGerarEscalamento(ActionEvent e) {
+        // TODO: Mudar para Simulacao que voce quer usar
+        Simulacao simulacaoEscolhida = new SimulacaoLuis1(this);
         if (cbSimularMultiplasVezes.isSelected()) {
-            Optional<Integer> optNumSimulacoes = adquirirNumeroSimulacoes();
-            if (optNumSimulacoes.isEmpty()) {
+            Integer optNumSimulacoes = adquirirNumeroSimulacoes();
+            if (optNumSimulacoes == null) {
                 return;
             }
 
             double mediaCapitalTotal = 0;
-            for (int i = 0; i < optNumSimulacoes.get(); i++) {
+            for (int i = 0; i < optNumSimulacoes; i++) {
                 // System.out.println("Simulacao x" + i);
-                ResultadoSimulacao resultadoSimulacao = simularPeriodo();
+                ResultadoSimulacao resultadoSimulacao = simulacaoEscolhida.simularPeriodo();
                 mediaCapitalTotal += resultadoSimulacao.getResultadoCapital();
             }
-            mediaCapitalTotal /= optNumSimulacoes.get();
-            System.out.println("Media capital total em " + optNumSimulacoes.get() + "x simulacoes: " + mediaCapitalTotal);
+            mediaCapitalTotal /= optNumSimulacoes;
+            System.out.println("Media capital total em " + optNumSimulacoes + "x simulacoes: " + mediaCapitalTotal);
         } else {
-            simularPeriodo();
+            simulacaoEscolhida.simularPeriodo();
         }
     }
 
-    public ResultadoSimulacao simularPeriodo() {
-        if (!cbSimularMultiplasVezes.isSelected()) {
-            System.out.println("\n\n\n\n\n\n");
-            System.out.println("Inicializando a simulacao");
-        }
+    public boolean adquirirSimularMultiplasVezes() {
+        return cbSimularMultiplasVezes.isSelected();
+    }
 
-        double total = 0;
-        double ultimoEscalamento = 0;
-        int qntContratosAtual = 0;
-
-        // Adquirir parametros do programa
-        Optional<Integer> optDiasUteis = adquirirDiasUteis();
-        if (optDiasUteis.isEmpty()) return null;
-
-        Optional<Integer> optAlvoEscalamento = adquirirAlvoEscalamento();
-        if (optAlvoEscalamento.isEmpty()) return null;
-
-        Optional<Integer> optQntContratos = adquirirQntContratos();
-        if (optQntContratos.isEmpty()) return null;
-
-        qntContratosAtual = optQntContratos.get();
-
-        Optional<Double> optCapitalInicial = adquirirCapitalInicial();
-        if (optCapitalInicial.isPresent()) {
-            total = optCapitalInicial.get();
-        }
-
-        Optional<Integer> optPorcAcerto = adquirirPorcAcerto();
-        if (optPorcAcerto.isEmpty()) return null;
-
-        Optional<Double> optLucroContrato = adquirirLucroContrato();
-        if (optLucroContrato.isEmpty()) return null;
-
-        Optional<Integer> optIncrementoContratos = adquirirIncrementoContratos();
-        // finalizar adquirir parametros do programa
-
-        if (!cbIncrementarFixoContratos.isSelected()) {
-            // Setar qnt contrato inicial caso n va subir em numero fixo
-            qntContratosAtual = ((int) total / optAlvoEscalamento.get()) + 1;
-        }
-
-        ResultadoSimulacao resultadoSimulacao = new ResultadoSimulacao();
-        for (int i = 0; i < optDiasUteis.get(); i++) {
-            int dia = i + 1;
-            int porc = new Random().nextInt(101);
-
-            if (!cbSimularMultiplasVezes.isSelected()) {
-                System.out.println(" -- Simulando dia " + dia + " -- ");
-                System.out.println("Total atual: " + total + " Ultimo escalamento: " + ultimoEscalamento + " Qnt Contratos: " + qntContratosAtual);
-            }
-
-            if (optPorcAcerto.get() >= porc) {
-                // Ganhou
-                if (!cbSimularMultiplasVezes.isSelected()) {
-                    System.out.println("Ganhou (+" + optLucroContrato.get() * qntContratosAtual + ")");
-                }
-                total += optLucroContrato.get() * qntContratosAtual;
-            } else {
-                // Perdeu
-                if (!cbSimularMultiplasVezes.isSelected()) {
-                    System.out.println("Perdeu (-" + optLucroContrato.get() * qntContratosAtual + ")");
-                }
-                total -= optLucroContrato.get() * qntContratosAtual;
-            }
-
-            // Ajustar quantidade de contratos
-            if (cbIncrementarFixoContratos.isSelected()) {
-                if (optIncrementoContratos.isEmpty()) return null;
-                // Aumentar / Diminuir por numero fixo
-                if (optPorcAcerto.get() > porc) {
-                    // Ganhou
-                    qntContratosAtual += optIncrementoContratos.get();
-                } else {
-                    // Perdeu
-                    qntContratosAtual -= Math.max(1, optIncrementoContratos.get()); // nao permitir ir para o negativo
-                }
-            } else {
-                // Ajustar automaticamente a quantidade de contratos
-                qntContratosAtual = ((int) total / optAlvoEscalamento.get()) + 1;
-            }
-
-            ResultadoDia resultadoDia = new ResultadoDia(total, qntContratosAtual, dia);
-            resultadoSimulacao.getResultadosDias().add(resultadoDia);
-        }
-        resultadoSimulacao.calcularResultados();
-        return resultadoSimulacao;
+    public boolean adquirirIncrementarManualmenteContratos() {
+        return cbIncrementarManualmenteContratos.isSelected();
     }
 
     // Abaixo tem varias funcoes para adquirir seguramente os parametros do programa
-    private Optional<Integer> adquirirIncrementoContratos() {
+    public Integer adquirirIncrementoContratos() {
         int incrementoCapital;
         try {
             incrementoCapital = Integer.parseInt(tfIncrementoCapital.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_INCREMENTO_CONTRATO + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(incrementoCapital);
+        return incrementoCapital;
     }
 
-    private Optional<Double> adquirirCapitalInicial() {
+    public Double adquirirCapitalInicial() {
         double capitalInicial;
         try {
             capitalInicial = Double.parseDouble(tfCapitalInicial.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_CAPITAL_INICIAL + " deve ser um numero/real!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(capitalInicial);
+        return capitalInicial;
     }
 
-    private Optional<Integer> adquirirDiasUteis() {
+    public Integer adquirirDiasUteis() {
         int diasUteis;
         try {
             diasUteis = Integer.parseInt(tfDiasUteis.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_DIAS_UTEIS + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(diasUteis);
+        return diasUteis;
     }
 
-    private Optional<Integer> adquirirQntContratos() {
+    public Integer adquirirQntContratos() {
         int qntContratos;
         try {
             qntContratos = Integer.parseInt(tfQntContratos.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_QUANTIDADE_CONTRATOS + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(qntContratos);
+        return qntContratos;
     }
 
-    private Optional<Double> adquirirLucroContrato() {
+    public Double adquirirLucroContrato() {
         double lucroContrato;
         try {
             lucroContrato = Double.parseDouble(tfLucroContrato.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_LUCRO_CONTRATO + " deve ser um numero/real!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(lucroContrato);
+        return lucroContrato;
     }
 
-    private Optional<Integer> adquirirPorcAcerto() {
+    public Integer adquirirPorcAcerto() {
         int porcAcerto;
         try {
             porcAcerto = Integer.parseInt(tfPorcAcerto.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_PORCENTAGEM_ACERTO + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(porcAcerto);
+        return porcAcerto;
     }
 
-    private Optional<Integer> adquirirAlvoEscalamento() {
+    public Integer adquirirAlvoEscalamento() {
         int alvoEscalamento;
         try {
             alvoEscalamento = Integer.parseInt(tfAlvoEscalamento.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_ALVO_ESCALAMENTO + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(alvoEscalamento);
+        return alvoEscalamento;
     }
 
-    private Optional<Integer> adquirirNumeroSimulacoes() {
+    public Integer adquirirNumeroSimulacoes() {
         int numeroSimulacoes;
         try {
             numeroSimulacoes = Integer.parseInt(tfNumeroSimulacoes.getText());
         } catch (NumberFormatException exception) {
             JOptionPane.showMessageDialog(null, TXT_NUMERO_SIMULACOES + " deve ser um numero!");
-            return Optional.empty();
+            return null;
         }
-        return Optional.of(numeroSimulacoes);
+        return numeroSimulacoes;
     }
 }
 
