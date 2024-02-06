@@ -1,8 +1,8 @@
-package view.model.simulacao;
+package model.simulacao;
 
 import view.JanelaPrincipal;
-import view.model.ResultadoDia;
-import view.model.ResultadoSimulacao;
+import model.ResultadoDia;
+import model.ResultadoSimulacao;
 
 import java.util.Random;
 

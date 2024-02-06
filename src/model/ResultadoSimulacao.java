@@ -1,8 +1,7 @@
-package view.model;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ResultadoSimulacao {
     private final List<ResultadoDia> resultadosDias = new ArrayList<>();

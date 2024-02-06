@@ -1,4 +1,4 @@
-package view.model;
+package model;
 
 public class ResultadoDia {
     private final double capital;

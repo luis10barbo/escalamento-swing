@@ -1,7 +1,7 @@
-package view.model.simulacao;
+package model.simulacao;
 
 import view.JanelaPrincipal;
-import view.model.ResultadoSimulacao;
+import model.ResultadoSimulacao;
 
 /**
  * Classe simulacao base, herdar dela para criar novos metodos de simulacao;

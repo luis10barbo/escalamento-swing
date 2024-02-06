@@ -2,9 +2,9 @@ package view;
 
 import view.componentes.LabelPrincipal;
 import view.componentes.TextFieldPrincipal;
-import view.model.ResultadoSimulacao;
-import view.model.simulacao.Simulacao;
-import view.model.simulacao.SimulacaoLuis1;
+import model.ResultadoSimulacao;
+import model.simulacao.Simulacao;
+import model.simulacao.SimulacaoLuis1;
 
 import javax.swing.*;
 import java.awt.*;
