@@ -2,6 +2,8 @@ package view;
 
 import view.componentes.LabelPrincipal;
 import view.componentes.TextFieldPrincipal;
+import view.model.ResultadoDia;
+import view.model.ResultadoSimulacao;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +19,12 @@ public class JanelaPrincipal extends JFrame {
     JTextField tfAlvoEscalamento;
     JTextField tfCapitalInicial;
     JCheckBox cbIncrementarFixoContratos;
+    JCheckBox cbSimularMultiplasVezes;
+    JTextField tfNumeroSimulacoes;
     JTextField tfIncrementoCapital;
     JPanel painelIncrementarFixoContratos;
+    JPanel painelSimularMultiplasVezes;
+
 
 
     String TXT_PORCENTAGEM_ACERTO = "Porcentagem acerto (ex: 80 seria 80%)";
@@ -29,6 +35,7 @@ public class JanelaPrincipal extends JFrame {
     String TXT_CAPITAL_INICIAL = "Capital Inicial";
     String TXT_INCREMENTAR_FIXO_CONTRATOS = "Incrementar por numero fixo os contratos ao atingir alvo";
     String TXT_INCREMENTO_CONTRATO = "Incremento de contrato por alvos";
+    String TXT_NUMERO_SIMULACOES = "Numero de Simulacoes (maior -> mais precisao)";
 
     public JanelaPrincipal() {
         criarJanela();
@@ -78,6 +85,18 @@ public class JanelaPrincipal extends JFrame {
 
         painelPrincipal.add(painelIncrementarFixoContratos);
 
+        painelSimularMultiplasVezes = new JPanel();
+        painelSimularMultiplasVezes.setLayout(new BoxLayout(painelSimularMultiplasVezes, BoxLayout.Y_AXIS));
+        cbSimularMultiplasVezes = new JCheckBox("Simular Multiplas Vezes");
+        painelPrincipal.add(cbSimularMultiplasVezes);
+        cbSimularMultiplasVezes.addActionListener(e -> {repaint();});
+
+        painelSimularMultiplasVezes.add(new LabelPrincipal(TXT_NUMERO_SIMULACOES));
+        tfNumeroSimulacoes = new JTextField("10000");
+        painelSimularMultiplasVezes.add(tfNumeroSimulacoes);
+
+        painelPrincipal.add(painelSimularMultiplasVezes);
+
         JButton btnGerarEscalamento = new JButton("Gerar Escalamento");
         painelPrincipal.add(btnGerarEscalamento);
         btnGerarEscalamento.addActionListener(this::cliqueGerarEscalamento);
@@ -94,15 +113,37 @@ public class JanelaPrincipal extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
         painelIncrementarFixoContratos.setVisible(cbIncrementarFixoContratos.isSelected());
-
+        painelSimularMultiplasVezes.setVisible(cbSimularMultiplasVezes.isSelected());
     }
 
     /**
      * Fazer a simulacao utilizando dos parametros definidos no programa
      */
     public void cliqueGerarEscalamento(ActionEvent e) {
-        System.out.println("\n\n\n\n\n\n");
-        System.out.println("Inicializando a simulacao");
+        if (cbSimularMultiplasVezes.isSelected()) {
+            Optional<Integer> optNumSimulacoes = adquirirNumeroSimulacoes();
+            if (optNumSimulacoes.isEmpty()) {
+                return;
+            }
+
+            double mediaCapitalTotal = 0;
+            for (int i = 0; i < optNumSimulacoes.get(); i++) {
+                // System.out.println("Simulacao x" + i);
+                ResultadoSimulacao resultadoSimulacao = simularPeriodo();
+                mediaCapitalTotal += resultadoSimulacao.getResultadoCapital();
+            }
+            mediaCapitalTotal /= optNumSimulacoes.get();
+            System.out.println("Media capital total em " + optNumSimulacoes.get() + "x simulacoes: " + mediaCapitalTotal);
+        } else {
+            simularPeriodo();
+        }
+    }
+
+    public ResultadoSimulacao simularPeriodo() {
+        if (!cbSimularMultiplasVezes.isSelected()) {
+            System.out.println("\n\n\n\n\n\n");
+            System.out.println("Inicializando a simulacao");
+        }
 
         double total = 0;
         double ultimoEscalamento = 0;
@@ -110,13 +151,13 @@ public class JanelaPrincipal extends JFrame {
 
         // Adquirir parametros do programa
         Optional<Integer> optDiasUteis = adquirirDiasUteis();
-        if (optDiasUteis.isEmpty()) return;
+        if (optDiasUteis.isEmpty()) return null;
 
         Optional<Integer> optAlvoEscalamento = adquirirAlvoEscalamento();
-        if (optAlvoEscalamento.isEmpty()) return;
+        if (optAlvoEscalamento.isEmpty()) return null;
 
         Optional<Integer> optQntContratos = adquirirQntContratos();
-        if (optQntContratos.isEmpty()) return;
+        if (optQntContratos.isEmpty()) return null;
 
         qntContratosAtual = optQntContratos.get();
 
@@ -126,10 +167,10 @@ public class JanelaPrincipal extends JFrame {
         }
 
         Optional<Integer> optPorcAcerto = adquirirPorcAcerto();
-        if (optPorcAcerto.isEmpty()) return;
+        if (optPorcAcerto.isEmpty()) return null;
 
         Optional<Double> optLucroContrato = adquirirLucroContrato();
-        if (optLucroContrato.isEmpty()) return;
+        if (optLucroContrato.isEmpty()) return null;
 
         Optional<Integer> optIncrementoContratos = adquirirIncrementoContratos();
         // finalizar adquirir parametros do programa
@@ -139,26 +180,33 @@ public class JanelaPrincipal extends JFrame {
             qntContratosAtual = ((int) total / optAlvoEscalamento.get()) + 1;
         }
 
+        ResultadoSimulacao resultadoSimulacao = new ResultadoSimulacao();
         for (int i = 0; i < optDiasUteis.get(); i++) {
             int dia = i + 1;
             int porc = new Random().nextInt(101);
-            System.out.println(" -- Simulando dia " + dia + " -- ");
-            System.out.println("Total atual: " + total + " Ultimo escalamento: " + ultimoEscalamento + " Qnt Contratos: " + qntContratosAtual);
 
+            if (!cbSimularMultiplasVezes.isSelected()) {
+                System.out.println(" -- Simulando dia " + dia + " -- ");
+                System.out.println("Total atual: " + total + " Ultimo escalamento: " + ultimoEscalamento + " Qnt Contratos: " + qntContratosAtual);
+            }
 
-            if (optPorcAcerto.get() > porc) {
+            if (optPorcAcerto.get() >= porc) {
                 // Ganhou
-                System.out.println("Ganhou (+" + optLucroContrato.get() * qntContratosAtual + ")");
+                if (!cbSimularMultiplasVezes.isSelected()) {
+                    System.out.println("Ganhou (+" + optLucroContrato.get() * qntContratosAtual + ")");
+                }
                 total += optLucroContrato.get() * qntContratosAtual;
             } else {
                 // Perdeu
-                System.out.println("Perdeu (-" + optLucroContrato.get() * qntContratosAtual + ")");
+                if (!cbSimularMultiplasVezes.isSelected()) {
+                    System.out.println("Perdeu (-" + optLucroContrato.get() * qntContratosAtual + ")");
+                }
                 total -= optLucroContrato.get() * qntContratosAtual;
             }
 
             // Ajustar quantidade de contratos
             if (cbIncrementarFixoContratos.isSelected()) {
-                if (optIncrementoContratos.isEmpty()) return;
+                if (optIncrementoContratos.isEmpty()) return null;
                 // Aumentar / Diminuir por numero fixo
                 if (optPorcAcerto.get() > porc) {
                     // Ganhou
@@ -172,8 +220,11 @@ public class JanelaPrincipal extends JFrame {
                 qntContratosAtual = ((int) total / optAlvoEscalamento.get()) + 1;
             }
 
-
+            ResultadoDia resultadoDia = new ResultadoDia(total, qntContratosAtual, dia);
+            resultadoSimulacao.getResultadosDias().add(resultadoDia);
         }
+        resultadoSimulacao.calcularResultados();
+        return resultadoSimulacao;
     }
 
     // Abaixo tem varias funcoes para adquirir seguramente os parametros do programa
@@ -253,4 +304,29 @@ public class JanelaPrincipal extends JFrame {
         }
         return Optional.of(alvoEscalamento);
     }
+
+    private Optional<Integer> adquirirNumeroSimulacoes() {
+        int numeroSimulacoes;
+        try {
+            numeroSimulacoes = Integer.parseInt(tfNumeroSimulacoes.getText());
+        } catch (NumberFormatException exception) {
+            JOptionPane.showMessageDialog(null, TXT_NUMERO_SIMULACOES + " deve ser um numero!");
+            return Optional.empty();
+        }
+        return Optional.of(numeroSimulacoes);
+    }
 }
+
+/*
+*
+* Porcentagem de acerto -> tirar do total a porcentagem
+* n contratos * capitalAtual => lucroAtual
+* falha = lucroAtual * (porcentagem - 100)
+* (tirar sempre 40% do lucro de todos dias)
+*
+*
+* Definir um teto (ex: 7k parou o programa)
+*
+* se ele desceu
+*
+* */
