@@ -3,6 +3,9 @@ package view.model.simulacao;
 import view.JanelaPrincipal;
 import view.model.ResultadoSimulacao;
 
+/**
+ * Classe simulacao base, herdar dela para criar novos metodos de simulacao;
+ */
 public abstract class Simulacao {
     private final JanelaPrincipal janelaPrincipal;
     public Simulacao(JanelaPrincipal janelaPrincipal) {
@@ -12,5 +15,8 @@ public abstract class Simulacao {
         return janelaPrincipal;
     }
 
-    public abstract ResultadoSimulacao simularPeriodo();
+    /**
+     * Metodo utilizado para simular
+     */
+    public abstract ResultadoSimulacao simular();
 }

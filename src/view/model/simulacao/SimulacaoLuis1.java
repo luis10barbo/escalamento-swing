@@ -12,7 +12,7 @@ public class SimulacaoLuis1 extends Simulacao{
     }
 
     @Override
-    public ResultadoSimulacao simularPeriodo() {
+    public ResultadoSimulacao simular() {
         // varios dos prints so sao feitos caso tenha a opcao Simular multiplas vezes desligada
         if (!getJanelaPrincipal().adquirirSimularMultiplasVezes()) {
             System.out.println("\n\n\n\n\n\n");

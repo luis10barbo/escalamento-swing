@@ -130,13 +130,13 @@ public class JanelaPrincipal extends JFrame {
             double mediaCapitalTotal = 0;
             for (int i = 0; i < optNumSimulacoes; i++) {
                 // System.out.println("Simulacao x" + i);
-                ResultadoSimulacao resultadoSimulacao = simulacaoEscolhida.simularPeriodo();
+                ResultadoSimulacao resultadoSimulacao = simulacaoEscolhida.simular();
                 mediaCapitalTotal += resultadoSimulacao.getResultadoCapital();
             }
             mediaCapitalTotal /= optNumSimulacoes;
             System.out.println("Media capital total em " + optNumSimulacoes + "x simulacoes: " + mediaCapitalTotal);
         } else {
-            simulacaoEscolhida.simularPeriodo();
+            simulacaoEscolhida.simular();
         }
     }
 
