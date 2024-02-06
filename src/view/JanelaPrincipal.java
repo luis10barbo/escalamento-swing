@@ -48,23 +48,23 @@ public class JanelaPrincipal extends JFrame {
         painelPrincipal.setLayout(new BoxLayout(painelPrincipal, BoxLayout.Y_AXIS));
 
         painelPrincipal.add(new LabelPrincipal(TXT_PORCENTAGEM_ACERTO));
-        tfPorcAcerto = new TextFieldPrincipal(80);
+        tfPorcAcerto = new TextFieldPrincipal(60);
         painelPrincipal.add(tfPorcAcerto);
 
         painelPrincipal.add(new LabelPrincipal(TXT_CAPITAL_INICIAL));
-        tfCapitalInicial = new TextFieldPrincipal(0);
+        tfCapitalInicial = new TextFieldPrincipal(1500);
         painelPrincipal.add(tfCapitalInicial);
 
         painelPrincipal.add(new LabelPrincipal(TXT_LUCRO_CONTRATO));
-        tfLucroContrato = new TextFieldPrincipal(100);
+        tfLucroContrato = new TextFieldPrincipal(75);
         painelPrincipal.add(tfLucroContrato);
 
         painelPrincipal.add(new LabelPrincipal(TXT_DIAS_UTEIS));
-        tfDiasUteis = new TextFieldPrincipal(30);
+        tfDiasUteis = new TextFieldPrincipal(20);
         painelPrincipal.add(tfDiasUteis);
 
         painelPrincipal.add(new LabelPrincipal(TXT_ALVO_ESCALAMENTO));
-        tfAlvoEscalamento = new TextFieldPrincipal(1000);
+        tfAlvoEscalamento = new TextFieldPrincipal(150);
         painelPrincipal.add(tfAlvoEscalamento);
 
         cbIncrementarManualmenteContratos = new JCheckBox(TXT_INCREMENTAR_MANUALMENTE_CONTRATOS);
